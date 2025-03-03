@@ -1,18 +1,22 @@
 // 和用户相关的状态管理
 import { createSlice } from "@reduxjs/toolkit";
 import { request } from "@/utils";
+import {setToken as _setToken ,getToken} from '@/utils'
 // createSlice 自动生成Reducer 函数 和 Action Creators
 const userStore = createSlice({
   name:"user",
   // 数据状态
   initialState:{
     // 后端返回的类型是什么，这里就写什么，是string，就写空串
-    token:''
+    token: getToken()||''
   },
   // 同步修改方法
   reducers:{
     setToken(state,action){
       state.token = action.payload
+      // localstorage存一份
+      _setToken(action.payload)
+
     }
   }
 })
