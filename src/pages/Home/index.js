@@ -1,4 +1,13 @@
+import BarChart from "./components/BarChar"
+
+
 const Home = () => {
-  return <div>this is home</div>
+  
+  return <div>
+    <BarChart title = {'三大框架满意度'}/>
+    <BarChart title = {'三大框架使用度'}/>
+    </div>
+
+  
 }
 export default Home
