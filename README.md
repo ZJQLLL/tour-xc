@@ -1,12 +1,12 @@
 ## Environment Prepare
 
-采用pnpm作为包管理工具(pnpm -v来判断是否已经按照)
+采用pnpm作为包管理工具(pnpm -v来判断是否已经按装)
 
 ```bash
 npm install -g pnpm
 ```
 
-
+ 
 Install `node_modules`:
 
 ```bash
