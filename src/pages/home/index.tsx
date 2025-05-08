@@ -11,8 +11,6 @@ export default function Index () {
   return (
     <View className='index'>
       <Text>游记列表</Text>
-      <Text>测试分支管理2</Text>
-      <Text>task2</Text>
       <AtButton type='primary'>按钮</AtButton>
     </View>
   )
