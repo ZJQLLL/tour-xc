@@ -1,5 +1,5 @@
 import { View, Text, Image } from '@tarojs/components'
-import { AtAvatar, AtIcon } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 import Taro, { useLoad, useReachBottom } from '@tarojs/taro'
 import { useState } from 'react'
 import './index.less'
@@ -64,7 +64,11 @@ export default function Index() {
       <View className='masonry'>
         <View className='column'>
           {leftList.map((note, index) => (
-            <View key={`left-${index}`} className='note-card'>
+            <View
+              key={`left-${index}`}
+              className='note-card'
+              onClick={() => Taro.navigateTo({ url: `/pages/home/noteDetail/index?id=${note._id}` })}
+            >
               <Image
                 className='cover'
                 src={note.coverImage}
@@ -73,23 +77,25 @@ export default function Index() {
               />
               <Text className='note-title'>{note.title}</Text>
               <View className='note-author-wrap'>
-              <AtAvatar
-                circle
-                image={note.author?.avatar||'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'}
-                className='note-author-avatar'
-                size='small'
-              ></AtAvatar>
-              <Text className='note-author'>{note.author?.nickname}</Text>
-              <AtIcon value='eye' size='16' color='#666'></AtIcon>
-              <Text className='note-view-count'>{note.views}</Text>
+                <View className='tem'>
+                  <Image className='avatar' src={note.author?.avatar} />
+                  <Text className='note-author'>{note.author?.nickname}</Text>
+                </View>
+                <View className='tem'>
+                  <AtIcon value='eye' size='16' color='#666'></AtIcon>
+                <Text className='note-view-count'>{note.views}</Text>
+                </View>
               </View>
-
             </View>
           ))}
         </View>
         <View className='column'>
           {rightList.map((note, index) => (
-            <View key={`right-${index}`} className='note-card'>
+            <View
+              key={`right-${index}`}
+              className='note-card'
+              onClick={() => Taro.navigateTo({ url: `/pages/home/noteDetail/index?id=${note._id}` })}
+            >
               <Image
                 className='cover'
                 src={note.coverImage}
@@ -98,15 +104,14 @@ export default function Index() {
               />
               <Text className='note-title'>{note.title}</Text>
               <View className='note-author-wrap'>
-              <AtAvatar
-                circle
-                image={note.author?.avatar||'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'}
-                className='note-author-avatar'
-                size='small'
-              ></AtAvatar>
-              <Text className='note-author'>{note.author?.nickname}</Text>
-              <AtIcon value='eye' size='16' color='#666'></AtIcon>
-              <Text className='note-view-count'>{note.views}</Text>
+                <View className='tem'>
+                  <Image className='avatar' src={note.author?.avatar} />
+                  <Text className='note-author'>{note.author?.nickname}</Text>
+                </View>
+                <View className='tem'>
+                  <AtIcon value='eye' size='16' color='#666'></AtIcon>
+                <Text className='note-view-count'>{note.views}</Text>
+              </View>
               </View>
             </View>
           ))}

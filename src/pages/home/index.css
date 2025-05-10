@@ -6,6 +6,7 @@
   font-size: 34px;
   font-weight: bold;
   margin-bottom: 16px;
+  font-style: italic;
 }
 .container .masonry {
   display: flex;
@@ -34,12 +35,42 @@
 .container .masonry .column .note-card .note-title {
   font-size: 28px;
   font-weight: 600;
+  font-style: italic;
   padding: 8px;
 }
 .container .masonry .column .note-card .note-author-wrap {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 8px 20px;
+  padding: 10px 8px 20px;
+}
+.container .masonry .column .note-card .note-author-wrap .tem {
+  display: flex;
+  align-items: center;
+}
+.container .masonry .column .note-card .note-author-wrap .avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+.container .masonry .column .note-card .note-author-wrap .note-author {
+  font-size: 20px;
+  /* 设置字体大小 */
+  color: #888;
+  /* 设置字体颜色 */
+  padding: 0 8px 8px;
+  margin-right: 80px;
+}
+.container .masonry .column .note-card .note-author-wrap .note-view-count {
+  font-size: 20px;
+  /* 设置字体大小 */
+}
+.container .masonry .column .note-card .note-author-wrap .avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-left: 8px;
 }
 .container .masonry .column .note-card .note-author-wrap .note-author {
   font-size: 20px;

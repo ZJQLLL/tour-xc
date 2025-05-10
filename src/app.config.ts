@@ -2,6 +2,7 @@ export default defineAppConfig({
   pages: [
     'pages/home/index',
     "pages/my/index",
+    'pages/home/noteDetail/index'
   ],
   "tabBar": {
     "list": [
