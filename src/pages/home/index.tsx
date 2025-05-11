@@ -1,25 +1,28 @@
 import { View, Text, Image } from '@tarojs/components'
-import { AtIcon } from 'taro-ui'
+import { AtIcon, AtSearchBar } from 'taro-ui'
 import Taro, { useLoad, useReachBottom } from '@tarojs/taro'
 import { useState } from 'react'
 import './index.less'
+import { noteItem } from '../../../types/noteItem'
 
 const pageSize = 10
 
 export default function Index() {
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [loading, setLoading] = useState(false)
-  const [leftList, setLeftList] = useState<any[]>([])
-  const [rightList, setRightList] = useState<any[]>([])
+  const [page, setPage] = useState<number>(1)
+  const [hasMore, setHasMore] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [leftList, setLeftList] = useState<noteItem[]>([])
+  const [rightList, setRightList] = useState<noteItem[]>([])
+  const [keyword, setKeyword] = useState<string>('')
 
-  const fetchNotes = async (nextPage = 1) => {
+
+  const fetchNotes = async (nextPage = 1,searchKeyword = keyword) => {
     if (loading) return
     setLoading(true)
 
     try {
       const res = await Taro.request({
-        url: `https://p9zej3r6lf.hzh.sealos.run/get_tour_list?page=${nextPage}&pageSize=${pageSize}`,
+        url: `https://p9zej3r6lf.hzh.sealos.run/get_tour_list?page=${nextPage}&pageSize=${pageSize}&keyword=${searchKeyword.trim()}`,
         method: 'GET',
       })
 
@@ -49,18 +52,30 @@ export default function Index() {
   }
 
   useLoad(() => {
-    fetchNotes(1)
+    fetchNotes(1,'')
   })
 
   useReachBottom(() => {
     if (hasMore) {
-      fetchNotes(page + 1)
+      fetchNotes(page + 1,keyword)
     }
   })
 
   return (
     <View className='container'>
-      <Text className='title'>游记列表</Text>
+      {/* <Text className='title'>游记列表</Text> */}
+      <AtSearchBar
+        value={keyword}
+        onChange={(val) => setKeyword(val)}
+        onConfirm={() => fetchNotes(1,keyword)}  // 回车或点击搜索按钮触发搜索
+        onActionClick={() => fetchNotes(1,keyword)} // 点击“搜索”按钮也触发
+        placeholder='搜索标题或昵称'
+        onClear={() => {
+            setKeyword('')
+            fetchNotes(1,'') // 清空搜索后刷新第一页
+          }}
+      />
+
       <View className='masonry'>
         <View className='column'>
           {leftList.map((note, index) => (
@@ -71,14 +86,14 @@ export default function Index() {
             >
               <Image
                 className='cover'
-                src={note.coverImage}
+                src={note.coverImage??'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'}
                 mode='widthFix'
                 style={{ height: `${note._height}px` }}
               />
               <Text className='note-title'>{note.title}</Text>
               <View className='note-author-wrap'>
                 <View className='tem'>
-                  <Image className='avatar' src={note.author?.avatar} />
+                  <Image className='avatar' src={note.author?.avatar??'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'} />
                   <Text className='note-author'>{note.author?.nickname}</Text>
                 </View>
                 <View className='tem'>
@@ -98,14 +113,14 @@ export default function Index() {
             >
               <Image
                 className='cover'
-                src={note.coverImage}
+                src={note.coverImage??'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'}
                 mode='widthFix'
                 style={{ height: `${note._height}px` }}
               />
               <Text className='note-title'>{note.title}</Text>
               <View className='note-author-wrap'>
                 <View className='tem'>
-                  <Image className='avatar' src={note.author?.avatar} />
+                  <Image className='avatar' src={note.author?.avatar??'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'} />
                   <Text className='note-author'>{note.author?.nickname}</Text>
                 </View>
                 <View className='tem'>
