@@ -10,6 +10,10 @@ export interface noteDetailItem {
     location: string;
     title: string;
     views: number;
+    video?:null | {
+      url: string;
+      cover: string;
+    };
 }
 
 export interface Author {
