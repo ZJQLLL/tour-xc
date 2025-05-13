@@ -66,7 +66,20 @@ const Publish = () => {
     // 通过id获取数据
     async function getArticleDetail(){
       const res = await getArticleById(articleId)
-      form.setFieldsValue(res.data)
+      // form.setFieldsValue(res.data)
+      // 为什么现在无法回填封面
+      // 数据结构的问题 set方法 ,需要一个{type:3}字段，现在返回的是{cover：{type：3}}
+      form.setFieldsValue({
+        ...res.data,
+        type:res.data.cover.type
+      })
+      // 回填图片列表
+      setImageType(res.data.cover.type)
+      // 显示图片
+      setImageList(res.data.cover.images.map(url=>{
+        return{url}
+      }))
+
     }
     getArticleDetail()
     // 调用实例方法完成回填
@@ -124,6 +137,7 @@ const Publish = () => {
                action={'http://geek.itheima.net/v1_0/upload'}
                onChange={onUploadChange}
                maxCount={imageType}
+               fileList={imageList}
             >
               <div style={{ marginTop: 8 }}>
                 <PlusOutlined />

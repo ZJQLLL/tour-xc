@@ -24,11 +24,6 @@ const items = [
     key: '/article',
     icon: <DiffOutlined />,
   },
-  {
-    label: '创建文章',
-    key: '/publish',
-    icon: <EditOutlined />,
-  },
 ]
 
 const GeekLayout = () => {
@@ -54,7 +49,7 @@ const GeekLayout = () => {
   navigate('/login')
   }
 
-const name = useSelector(state=>state.user.userInfo.name)
+const name = useSelector(state=>state.user.userInfo.username)
   return (
     <Layout>
       <Header className="header">

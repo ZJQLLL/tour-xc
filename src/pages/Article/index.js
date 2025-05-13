@@ -1,205 +1,394 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select,Popconfirm } from 'antd'
-// 引入汉化包，让时间选择器是英文
-import locale from 'antd/es/date-picker/locale/zh_CN'
+import { Card, Breadcrumb, Form, Button, Radio, Popconfirm, message, Modal, Input } from 'antd'
 
 import { Table, Tag, Space } from 'antd'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import img404 from '@/assets/error.png'
-import { useChannel } from '@/hooks/useChannel'
-import { useEffect,useState } from 'react'
-import { getArticleListAPI } from '@/apis/article'
-import { delArticleAPI } from '@/apis/article'
-
-const { Option } = Select
-const { RangePicker } = DatePicker
-
-
+import { useEffect, useState } from 'react'
+import {
+  getArticleListAPI,
+  delArticleAPI,
+  approveArticleAPI,
+  rejectArticleAPI
+} from '@/apis/article'
+import { useSelector } from 'react-redux'
 
 const Article = () => {
-  const {channelList} = useChannel()
   const navigate = useNavigate()
 
-  // 枚举
-  const status ={
-    1:<Tag color='warning'>待审核</Tag>,
-    2:<Tag color='success'>审核通过</Tag>
+  // 从Redux store获取用户信息
+  const { userInfo } = useSelector(state => state.user)
+
+  // 状态映射
+  const statusMap = {
+    'pending': <Tag color='warning'>待审核</Tag>,
+    'approved': <Tag color='success'>审核通过</Tag>,
+    'rejected': <Tag color='error'>已拒绝</Tag>
   }
+
+  const [rejectModalVisible, setRejectModalVisible] = useState(false)
+  const [currentArticleId, setCurrentArticleId] = useState('')
+  const [rejectReason, setRejectReason] = useState('')
+
   const columns = [
     {
       title: '封面',
-      dataIndex: 'cover',
+      dataIndex: 'coverImage',
       width: 120,
-      render: cover => {
-        return <img src={cover.images[0] || img404} width={80} height={60} alt="" />
-      }
+      render: coverImage => (
+        <img src={coverImage || img404} width={80} height={60} alt="" className="rounded object-cover" />
+      )
     },
     {
       title: '标题',
       dataIndex: 'title',
-      width: 220
+      width: 220,
+      render: (text, record) => (
+        <span className="font-medium hover:text-primary cursor-pointer" onClick={() => navigate(`/article/${record._id}`)}>
+          {text}
+        </span>
+      )
+    },
+    {
+      title: '作者',
+      dataIndex: 'author',
+      render: author => (
+        <div className="flex items-center space-x-2">
+          <img src={author?.avatar || img404} alt="作者头像" className="w-8 h-8 rounded-full object-cover" />
+          <span>{author?.nickname || '未知'}</span>
+        </div>
+      )
     },
     {
       title: '状态',
       dataIndex: 'status',
-      render: data => status[data] 
+      render: status => statusMap[status] || <Tag color='default'>{status}</Tag>
     },
     {
       title: '发布时间',
-      dataIndex: 'pubdate'
+      dataIndex: 'createdAt',
+      render: date => new Date(date).toLocaleDateString('zh-CN')
     },
     {
       title: '阅读数',
-      dataIndex: 'read_count'
+      dataIndex: 'views',
+      sorter: (a, b) => a.views - b.views
     },
     {
       title: '评论数',
-      dataIndex: 'comment_count'
+      dataIndex: 'commentCount',
+      sorter: (a, b) => a.commentCount - b.commentCount
     },
     {
       title: '点赞数',
-      dataIndex: 'like_count'
+      dataIndex: 'likes',
+      sorter: (a, b) => a.likes - b.likes
     },
     {
       title: '操作',
-      render: data => {
-        return (
-          <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/publish?id=${data.id}`)} />
+      width: 180,
+      render: (_, record) => (
+        <Space size="middle">
+
+          {/* 仅待审核状态显示审核按钮 */}
+          {record.status === 'pending' && (
+            <Space size="small">
+
+              <Button
+                type="primary"
+                icon={<CheckCircleOutlined />}
+                style={{
+                  backgroundColor: '#52c41a',
+                  borderColor: '#52c41a',
+                  borderRadius: '8px', // 添加圆角
+                  height: '32px',      // 保持适当高度
+                  padding: '0 16px'    // 添加左右内边距
+                }}
+                onClick={() => handleApprove(record._id)}
+                className="hover:bg-green-600 hover:scale-105 transition-all duration-300"
+              >
+                <span className="hidden md:inline ml-1">通过</span>
+              </Button>
+
+              <Button
+                type="primary"
+                danger
+                icon={<CloseCircleOutlined />}
+                style={{
+                  borderRadius: '8px', // 添加圆角
+                  height: '32px',      // 保持适当高度
+                  padding: '0 16px'    // 添加左右内边距
+                }}
+                onClick={() => showRejectModal(record._id)}
+                className="hover:bg-red-600 hover:scale-105 transition-all duration-300"
+              >
+                <span className="hidden md:inline ml-1">拒绝</span>
+              </Button>
+
+            </Space>
+          )}
+
+          {/* 仅admin角色显示删除按钮 */}
+          {userInfo.role === 'admin' && (
             <Popconfirm
-              title="确认删除该条文章吗?"
-              onConfirm={() => onConfirm(data)}
+              title="确认删除该文章吗?"
+              description="删除后将无法恢复"
+              onConfirm={() => handleDelete(record._id)}
               okText="确认"
               cancelText="取消"
+              okButtonProps={{ danger: true }}
             >
               <Button
                 type="primary"
                 danger
                 shape="circle"
                 icon={<DeleteOutlined />}
+                className="hover:scale-105 transition-transform"
               />
             </Popconfirm>
-          </Space>
-        )
-      }
+          )}
+        </Space>
+      )
     }
+
+
   ]
-  const [reqData,setReqData] = useState({
-    status:'',
-    channel_id:'',
-    begin_pubdate:'',
-    end_pubdate:'',
-    page:1,
-    per_page:4
+
+  const [reqData, setReqData] = useState({
+    page: 1,
+    pageSize: 10,
+    status: ''
   })
 
+  const [articleList, setArticleList] = useState([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [form] = Form.useForm()
+
   // 获取文章列表
-  const [list,setList] = useState([])
-  const [count,setCount] =useState(0)
   useEffect(() => {
-    async function getList() {
-      // console.log('Fetching articles with params:', reqData); // 添加调试信息
-      try {
-        const res = await getArticleListAPI(reqData);
-        // console.log('Received data:', res.data); // 添加调试信息
-        setList(res.data.results);
-        setCount(res.data.total_count);
-      } catch (error) {
-        console.error('Error fetching article list:', error);
+    fetchArticleList()
+  }, [reqData])
+
+  const fetchArticleList = async () => {
+    setLoading(true)
+    try {
+      const res = await getArticleListAPI(reqData)
+
+      // 验证响应格式
+      if (!res.data || !Array.isArray(res.data.list)) {
+        throw new Error('API响应格式不正确')
       }
+
+      setArticleList(res.data.list || [])
+      setTotal(res.data.total || 0)
+
+      // 显示成功消息
+      if (reqData.status) {
+        message.success(`已筛选出${res.data.total || 0}条${getStatusText(reqData.status)}的文章`)
+      }
+    } catch (error) {
+      message.error('获取文章列表失败，请稍后重试')
+      console.error('API请求错误:', error)
+    } finally {
+      setLoading(false)
     }
-    getList();
-  }, [reqData]);
-
-  // 筛选功能
- 
-
-  // 2、获取表单数据
-  const onFinish = (formValue)=>{
-    // console.log(formValue);
-    
-    // 3、把表单收集到的数据放到参数中
-    setReqData({
-      ...reqData,
-      channel_id:formValue.channel_id,
-      status:formValue.status,
-      begin_pubdate:formValue.date[0].format('YYYY-MM-DD'),
-      end_pubdate:formValue.date[1].format('YYYY-MM-DD'),
-
-    })
-    
-    
-  // 4、重新拉去文章列表+渲染table逻辑，通过useEffect的依赖项发生变化，重复执行副作用函数
-  }
-  const onPageChange =  (page)=>{
-    console.log(page);
-    setReqData({
-      ...reqData,
-      page
-    })
-    
   }
 
-  const onConfirm = async (data)=>{
-    console.log(data);
-    await delArticleAPI(data.id)
-    setReqData({
-      ...reqData,
-    })
+  // 获取状态文本描述
+  const getStatusText = (status) => {
+    const statusTexts = {
+      'pending': '待审核',
+      'approved': '审核通过',
+      'rejected': '已拒绝'
+    }
+    return statusTexts[status] || '全部'
+  }
 
+  // 表单提交处理
+  const onFinish = (formValue) => {
+    // 创建新的请求参数对象，确保引用变化
+    const newReqData = {
+      page: 1,
+      pageSize: reqData.pageSize,
+      status: formValue.status || ''
+    }
+    setReqData(newReqData)
+  }
+
+  // 表单提交失败处理
+  const onFinishFailed = (errorInfo) => {
+    console.error('表单验证失败:', errorInfo)
+    message.error('请检查表单输入')
+  }
+
+  // 重置筛选
+  const resetFilters = () => {
+    form.resetFields()
+    setReqData({
+      page: 1,
+      pageSize: 10,
+      status: ''
+    })
+  }
+
+  // 分页处理
+  const onPageChange = (page, pageSize) => {
+    setReqData(prevData => ({
+      ...prevData,
+      page,
+      pageSize
+    }))
+  }
+
+  // 删除文章处理
+  const handleDelete = async (id) => {
+    try {
+      await delArticleAPI(id)
+      message.success('文章删除成功')
+      fetchArticleList()
+    } catch (error) {
+      message.error('删除失败，请稍后重试')
+      console.error('删除文章错误:', error)
+    }
+  }
+
+  // 显示拒绝原因模态框
+  const showRejectModal = (id) => {
+    setCurrentArticleId(id)
+    setRejectReason('')
+    setRejectModalVisible(true)
+  }
+
+  // 隐藏拒绝原因模态框
+  const hideRejectModal = () => {
+    setRejectModalVisible(false)
+  }
+
+  // 处理审核通过
+  const handleApprove = async (id) => {
+    try {
+      await approveArticleAPI(id)
+      message.success('文章审核通过')
+      fetchArticleList()
+    } catch (error) {
+      message.error('审核失败，请稍后重试')
+      console.error('审核通过错误:', error)
+    }
+  }
+
+  // 处理审核拒绝
+  const handleReject = async () => {
+    if (!rejectReason.trim()) {
+      message.error('请输入拒绝原因')
+      return
+    }
+
+    try {
+      await rejectArticleAPI(currentArticleId, rejectReason)
+      message.success('文章已拒绝')
+      fetchArticleList()
+      hideRejectModal()
+    } catch (error) {
+      message.error('操作失败，请稍后重试')
+      console.error('审核拒绝错误:', error)
+    }
   }
 
   return (
-    <div>
+    <div className="p-4 min-h-screen bg-gray-50">
       <Card
         title={
           <Breadcrumb items={[
             { title: <Link to={'/'}>首页</Link> },
-            { title: '文章列表' },
+            { title: '文章管理' },
+            { title: '文章列表' }
           ]} />
         }
-        style={{ marginBottom: 20 }}
+        className="mb-6 shadow-sm rounded-lg"
       >
-        <Form initialValues={{ status: '' }} onFinish={onFinish}>
+        <Form
+          form={form}
+          initialValues={{ status: '' }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          layout="inline"
+          className="flex flex-wrap gap-4"
+        >
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={''}>全部</Radio>
-              <Radio value={0}>草稿</Radio>
-              <Radio value={2}>审核通过</Radio>
+              <Radio value="pending">待审核</Radio>
+              <Radio value="approved">审核通过</Radio>
+              <Radio value="rejected">已拒绝</Radio>
             </Radio.Group>
           </Form.Item>
 
-          <Form.Item label="频道" name="channel_id">
-            <Select
-              placeholder="请选择文章频道"
-              // defaultValue="请选择文章频道"
-              style={{ width: 120 }}
+          <Form.Item className="ml-auto">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg transition-all duration-300"
             >
-              {channelList.map(item => <Option key={item.id }value={item.id}>{item.name}</Option> )}
-              
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="日期" name="date">
-            {/* 传入locale属性 控制中文显示*/}
-            <RangePicker locale={locale}></RangePicker>
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ marginLeft: 40 }}>
-              筛选
+              <i className="fa fa-filter mr-2"></i>筛选
+            </Button>
+            <Button
+              type="default"
+              onClick={resetFilters}
+              className="ml-3 px-6 py-2 rounded-lg transition-all duration-300"
+            >
+              <i className="fa fa-refresh mr-2"></i>重置
             </Button>
           </Form.Item>
         </Form>
       </Card>
+
       {/* 表格区域 */}
-      <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={list} pagination={{
-          total:count,
-          pageSize:reqData.per_page,
-          onChange:onPageChange
-          }}/>
+      <Card
+        title={`共 ${total} 条文章`}
+        className="shadow-sm rounded-lg overflow-hidden"
+      >
+        <Table
+          rowKey="_id"
+          columns={columns}
+          dataSource={articleList}
+          pagination={{
+            total,
+            pageSize: reqData.pageSize,
+            current: reqData.page,
+            onChange: onPageChange,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            showQuickJumper: true,
+            position: ['bottomRight'],
+            className: 'mt-4'
+          }}
+          loading={loading}
+          bordered={false}
+          rowClassName={(record, index) => index % 2 === 0 ? 'bg-gray-50' : ''}
+          scroll={{ x: 'max-content' }}
+        />
       </Card>
+      {/* 审核拒绝原因模态框 */}
+      <Modal
+        title="审核拒绝"
+        visible={rejectModalVisible}
+        onOk={handleReject}
+        onCancel={hideRejectModal}
+        okText="确认拒绝"
+        cancelText="取消"
+        okButtonProps={{ danger: true }}
+      >
+        <p>请输入拒绝原因:</p>
+        <Input.TextArea
+          rows={4}
+          value={rejectReason}
+          onChange={(e) => setRejectReason(e.target.value)}
+          placeholder="请输入拒绝原因..."
+          maxLength={200}
+        />
+        <p className="text-gray-500 text-sm mt-2">最多200个字符</p>
+      </Modal>
     </div>
   )
 }

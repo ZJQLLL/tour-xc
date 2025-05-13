@@ -2,9 +2,14 @@ import Layout from '@/pages/Layout' //等价于 src/pages/Layout
 import Login from '@/pages/Login'
 import {createBrowserRouter} from 'react-router-dom'
 import {AuthRoute} from '@/components/AuthRoute'
-import Home from '@/pages/Home'
 import Article from '@/pages/Article'
-import Publish from '@/pages/Publish'
+import { Suspense } from 'react'
+// 实现路由懒加载
+// // 1、lazy函数对组件进行导入
+
+// const Home = lazy(()=>import('@/pages/Home'))
+// const Article = lazy(()=>import('@/pages/Article'))
+// const Publish = lazy(()=>import('@/pages/Publish'))
 
 
 // 配置路由
@@ -15,16 +20,8 @@ const router = createBrowserRouter([
     element: <AuthRoute><Layout/></AuthRoute>,
     children:[
       {
-        path:'/',
-        element:<Home />
-      },
-      {
         path:'article',
-        element:<Article />
-      },
-      {
-        path:'publish',
-        element:<Publish />
+        element:<Suspense fallback={'加载中'}><Article /></Suspense>
       },
     ]
 

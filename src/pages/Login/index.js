@@ -1,6 +1,5 @@
 import './index.scss'
 import { Card, Form, Input, Button, message } from 'antd'
-import logo from '@/assets/logo.png'
 import { useDispatch } from 'react-redux'
 import { fetchLogin } from '@/store/modules/user'
 import {useNavigate}from 'react-router-dom'
@@ -20,35 +19,27 @@ const Login = () => {
   return (
     <div className="login">
       <Card className="login-container">
-        <img className="login-logo" src={logo} alt="" />
+        {/* <img className="login-logo" alt="" /> */}
         {/* 登录表单 */}
         <Form onFinish={onFinish} validateTrigger='onBlur'>
-          <Form.Item
-            name="mobile"
+        <Form.Item
+            name="username"
             rules={[
-              {
-                required: true,
-                message: '请输入手机号!',
-              },
-              {
-                pattern:/^1[3-9]\d{9}$/,
-                message: '请输入正确的手机号格式!',
-              },
+              { required: true, message: '请输入用户名!' }
             ]}
           >
-            <Input size="large" placeholder="请输入手机号" />
+            <Input size="large" placeholder="请输入用户名" />
           </Form.Item>
+
           <Form.Item
-            name="code"
+            name="password"
             rules={[
-              {
-                required: true,
-                message: '请输入验证码!',
-              },
+              { required: true, message: '请输入密码!' }
             ]}
           >
-            <Input size="large" placeholder="请输入验证码" />
+            <Input.Password size="large" placeholder="请输入密码" />
           </Form.Item>
+
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" block>
               登录
