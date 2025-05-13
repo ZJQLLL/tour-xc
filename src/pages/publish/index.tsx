@@ -76,7 +76,7 @@ const Publish = () => {
     };
 
     return (
-        <View className={styles.publishPage}>
+        <View>
             <Text>标题 *</Text>
             <Input value={title} onInput={(e) => setTitle(e.detail.value)} />
 

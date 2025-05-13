@@ -154,6 +154,7 @@ const handleNoteClick = async (noteId, column = 'left') => {
           setKeyword('')
           fetchNotes(1, '') // 清空搜索后刷新第一页
         }}
+        className='search-bar'
       />
 
       <View className='masonry'>

@@ -45,7 +45,7 @@ const MyTravel = () => {
 
     return (
         <View className="my-travel-page">
-            <Button onClick={() => Taro.navigateTo({ url: '/pages/publish/index' })}>
+            <Button onClick={() => Taro.switchTab({ url: '/pages/publish/index' })}>
                 ➕ 发布新游记
             </Button>
 
