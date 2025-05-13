@@ -54,11 +54,31 @@ const Article = () => {
       dataIndex: 'author',
       render: author => (
         <div className="flex items-center space-x-2">
-          <img src={author?.avatar || img404} alt="作者头像" className="w-8 h-8 rounded-full object-cover" />
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              overflow: 'hidden',
+              flexShrink: 0
+            }}
+          >
+            <img
+              src={author?.avatar || img404}
+              alt="作者头像"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block'
+              }}
+            />
+          </div>
           <span>{author?.nickname || '未知'}</span>
         </div>
       )
     },
+    
     {
       title: '状态',
       dataIndex: 'status',
