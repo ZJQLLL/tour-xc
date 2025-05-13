@@ -1,0 +1,74 @@
+.registerPage {
+    padding: 40px;
+    background-color: #f0f6ff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+.title {
+    font-size: 28px;
+    color: #0056b3;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.label {
+    font-size: 24px;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.inputField {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: white;
+    font-size: 24px;
+}
+
+.avatarPreview {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.button {
+    margin-top: 30px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-size: 24px;
+}
+
+.passwordWrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0 10px;
+    background-color: white;
+}
+
+.passwordInput {
+    flex: 1;
+    padding: 10px;
+    font-size: 24px;
+    border: none;
+    background: transparent;
+}
+
+.eyeIcon {
+    width: 24px;
+    height: 24px;
+}

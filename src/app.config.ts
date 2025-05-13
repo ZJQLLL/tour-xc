@@ -2,6 +2,10 @@ export default defineAppConfig({
   pages: [
     'pages/home/index',
     "pages/my/index",
+    'pages/login/index',
+    'pages/register/index',
+    'pages/my-travel/index',
+    'pages/publish/index',
   ],
   "tabBar": {
     "list": [
@@ -9,13 +13,13 @@ export default defineAppConfig({
         "pagePath": "pages/home/index",
         "text": "首页",
         "iconPath": "static/tabs/home_default.png",
-				"selectedIconPath": "static/tabs/home_selected.png"
+        "selectedIconPath": "static/tabs/home_selected.png"
       },
       {
         "pagePath": "pages/my/index",
         "text": "我的",
         "iconPath": "static/tabs/user_default.png",
-				"selectedIconPath": "static/tabs/user_selected.png"
+        "selectedIconPath": "static/tabs/user_selected.png"
       }
     ],
     "color": "#000000",

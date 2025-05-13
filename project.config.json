@@ -1,15 +1,39 @@
 {
-  "miniprogramRoot": "./dist",
+  "miniprogramRoot": "dist/",
   "projectname": "xc-tour",
   "description": "游记发布系统,，可以在手机端发布游记以及查看、分享所有已成功发",
-  "appid": "touristappid",
+  "appid": "wxb2a6a6bdf01fc256",
   "setting": {
     "urlCheck": true,
     "es6": false,
     "enhance": false,
     "compileHotReLoad": false,
     "postcss": false,
-    "minified": false
+    "minified": false,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
-  "compileType": "miniprogram"
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {}
 }

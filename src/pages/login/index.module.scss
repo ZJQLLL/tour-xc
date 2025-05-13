@@ -1,0 +1,110 @@
+.loginPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #c7e0ff, #e6f2ff);
+    /* 调整背景渐变颜色 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.container {
+    width: 90%;
+    max-width: 450px;
+    padding: 50px 30px;
+    background: #ffffff;
+    border-radius: 25px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    /* 增强阴影效果 */
+}
+
+.title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0066cc;
+    /* 调整标题颜色 */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.inputGroup {
+    margin-bottom: 25px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 3px 20px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    font-size: 28px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.input:focus {
+    border-color: #0066cc;
+    /* 输入框聚焦时的边框颜色 */
+    outline: none;
+}
+
+.loginBtn {
+    width: 100%;
+    background-color: #0066cc;
+    /* 调整按钮背景色 */
+    color: #fff;
+    border-radius: 12px;
+    font-size: 28px;
+    padding: 16px 0;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.loginBtn:hover {
+    background-color: #0052a8;
+    /* 按钮悬停时的背景色 */
+}
+
+.registerBtn {
+    width: 100%;
+    margin-top: 20px;
+    background-color: transparent;
+    color: #0066cc;
+    border: 2px solid #0066cc;
+    border-radius: 12px;
+    font-size: 28px;
+    padding: 14px 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.registerBtn:hover {
+    background-color: #0066cc;
+    color: #fff;
+}
+
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    flex: 1;
+    padding-right: 40px;
+    /* 为小眼睛图标预留空间 */
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #999;
+}
