@@ -4,8 +4,7 @@ export default defineAppConfig({
     "pages/my/index",
     'pages/login/index',
     'pages/register/index',
-    'pages/my-travel/index',
-    'pages/publish/index',
+    'pages/home/noteDetail/index'
   ],
   "tabBar": {
     "list": [
