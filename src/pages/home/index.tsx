@@ -68,6 +68,8 @@ export default function Index() {
         method: 'GET',
       })
 
+
+
       const list = res.data.data || []
       const withHeights = list.map((item: any) => ({
         ...item,
