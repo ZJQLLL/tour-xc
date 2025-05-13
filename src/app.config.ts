@@ -4,7 +4,9 @@ export default defineAppConfig({
     "pages/my/index",
     'pages/login/index',
     'pages/register/index',
-    'pages/home/noteDetail/index'
+    'pages/home/noteDetail/index',
+    'pages/my-travel/index',
+    'pages/publish/index'
   ],
   "tabBar": {
     "list": [
@@ -15,7 +17,7 @@ export default defineAppConfig({
         "selectedIconPath": "static/tabs/home_selected.png"
       },
       {
-        "pagePath": "pages/my/index",
+        "pagePath": "pages/my-travel/index",
         "text": "我的",
         "iconPath": "static/tabs/user_default.png",
         "selectedIconPath": "static/tabs/user_selected.png"
