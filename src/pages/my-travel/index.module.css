@@ -1,4 +1,4 @@
-.my-travel-page {
+/* .my-travel-page {
     padding: 20px;
 }
 
@@ -12,4 +12,107 @@
 .travel-card .title {
     font-weight: bold;
     margin-bottom: 4px;
+} */
+
+/* src/pages/my-travel/index.module.css */
+
+/* .my-travel-page {
+    padding: 20px;
+    background-color: #f7f8fa;
+    min-height: 100vh;
+}
+
+.travel-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.travel-card:hover {
+    transform: translateY(-2px);
+}
+
+.title {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.status-text {
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.button-group button {
+    flex: 1;
+    font-size: 26rpx;
+}
+
+button {
+    flex: 1;
+} */
+
+.my-travel-page {
+    padding: 20rpx;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.travel-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 16rpx;
+    overflow: hidden;
+    margin-bottom: 20rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.cover {
+    width: 240rpx;
+    height: 160rpx;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.content {
+    flex: 1;
+    padding: 20rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8rpx;
+}
+
+.status-text {
+    font-size: 26rpx;
+    color: #888;
+    margin-bottom: 16rpx;
+}
+
+.button-group {
+    display: flex;
+    gap: 20rpx;
+}
+
+.button-group button {
+    flex: 1;
+    font-size: 26rpx;
 }

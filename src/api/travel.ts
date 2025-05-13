@@ -9,22 +9,26 @@ export const getMyTravels = () =>
         },
     });
 
+// export const deleteTravel = (id: string) =>
+//     Taro.request({
+//         url: `https://p9zej3r6lf.hzh.sealos.run/delete_note/${id}`,
+//         method: 'DELETE',
+//         header: {
+//             Authorization: Taro.getStorageSync('token'),
+//         },
+//     });
 export const deleteTravel = (id: string) =>
     Taro.request({
-        url: `https://your-sealos-api/travel/${id}`,
-        method: 'DELETE',
-        header: {
-            Authorization: Taro.getStorageSync('token'),
-        },
+        url: `https://p9zej3r6lf.hzh.sealos.run/delete_note?_id=${id}`,
+        method: 'POST',
+        data: { id },
     });
+
 
 export const getTravelById = (id: string) =>
     Taro.request({
-        url: `https://your-sealos-api/travel/${id}`,
+        url: `https://p9zej3r6lf.hzh.sealos.run/get_my_note?authorId=${id}`,
         method: 'GET',
-        header: {
-            Authorization: Taro.getStorageSync('token'),
-        },
     });
 
 export const uploadFile = (filePath: string, type: 'image' | 'video') =>

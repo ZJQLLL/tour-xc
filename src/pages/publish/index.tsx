@@ -4,7 +4,7 @@ import { View, Text, Input, Textarea, Button, Image, Video } from '@tarojs/compo
 import Taro, { useRouter } from '@tarojs/taro';
 import { getTravelById, uploadFile, saveTravel } from '@/api/travel';
 import { checkLogin } from '@/utils/auth';
-import styles from './index.module.scss';
+import './index.module.scss';
 
 const Publish = () => {
     const router = useRouter();
