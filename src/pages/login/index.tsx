@@ -24,7 +24,7 @@ const Login = () => {
             Taro.setStorageSync('user', res.data.user);
             Taro.showToast({ title: '登录成功' });
             setTimeout(() => {
-                Taro.redirectTo({ url: '/pages/my-travel/index' });
+                Taro.redirectTo({ url: '/pages/my/index' });
             }, 1500);
         } else {
             Taro.showToast({ title: '用户名或密码错误', icon: 'none' });
