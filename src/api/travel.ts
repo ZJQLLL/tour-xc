@@ -20,7 +20,7 @@ export const getMyTravels = () =>
 export const deleteTravel = (id: string) =>
     Taro.request({
         url: `https://p9zej3r6lf.hzh.sealos.run/delete_note?_id=${id}`,
-        method: 'POST',
+        method: 'DELETE',
         data: { id },
     });
 
