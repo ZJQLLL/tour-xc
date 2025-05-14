@@ -1,21 +1,19 @@
-// src/pages/my-travel/index.tsx
-// import React, { useEffect, useState } from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, Button } from '@tarojs/components';
+import { View, Text, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getMyTravels, deleteTravel } from '@/api/travel';
-import { checkLogin } from '@/utils/auth';
+import { getTravelById, deleteTravel } from '@/api/travel';
+import { checkLogin, getCurrentUser } from '@/utils/auth'; // 需要有获取当前用户信息的方法
 import './index.module.css';
 
-const MyTravel = () => {
-    // const [travels, setTravels] = useState([]);
-    interface Travel {
-        id: string;
-        title: string;
-        status: 'pending' | 'approved' | 'rejected';
-        rejectReason?: string;
-    }
+interface Travel {
+    id: string;
+    title: string;
+    status: 'pending' | 'approved' | 'rejected';
+    rejectReason?: string;
+    coverImage?: string;
+}
 
+const MyTravel = () => {
     const [travels, setTravels] = useState<Travel[]>([]);
 
     useEffect(() => {
@@ -24,49 +22,81 @@ const MyTravel = () => {
     }, []);
 
     const fetchTravels = async () => {
-        const res = await getMyTravels();
-        if (res.statusCode === 200) {
-            setTravels(res.data);
+        const user = getCurrentUser(); // 假设返回 { id: 'xxx', ... }
+        if (!user?.id) {
+            Taro.showToast({ title: '请先登录', icon: 'none' });
+            return;
+        }
+        console.log('当前用户:', user);
+
+        try {
+            const res = await getTravelById(user.id);
+            console.log('获取游记:', res);
+
+            if (res.data.message === 'success') {
+                const mappedTravels = res.data.data.list.map(item => ({
+                    id: item._id,
+                    title: item.title,
+                    status: item.status,
+                    coverImage: item.coverImage,
+                    rejectReason: item.rejectReason, // 若没有则为 undefined
+                }));
+                setTravels(mappedTravels);
+            }
+        } catch (error) {
+            Taro.showToast({ title: '获取游记失败', icon: 'none' });
         }
     };
 
-    const handleDelete = async (id) => {
-        await deleteTravel(id);
+    const handleDelete = async (id: string) => {
+        await deleteTravel(id); // 注意：需要确保 deleteTravel 实际接口存在
         Taro.showToast({ title: '删除成功' });
         fetchTravels();
     };
 
-    const renderStatus = (status, reason) => {
+    const renderStatus = (status: string, reason?: string) => {
         if (status === 'pending') return '待审核';
         if (status === 'approved') return '已通过';
-        if (status === 'rejected') return `未通过：${reason}`;
+        if (status === 'rejected') return `未通过：${reason || '无原因'}`;
         return '';
     };
 
     return (
         <View className="my-travel-page">
-            <Button onClick={() => Taro.switchTab({ url: '/pages/publish/index' })}>
+            {/* <Button onClick={() => Taro.switchTab({ url: '/pages/publish/index' })}>
                 ➕ 发布新游记
-            </Button>
+            </Button> */}
 
             {travels.map((t) => (
                 <View key={t.id} className="travel-card">
-                    <Text className="title">{t.title}</Text>
-                    <Text>{renderStatus(t.status, t.rejectReason)}</Text>
-                    <Button
-                        size="mini"
-                        onClick={() => Taro.navigateTo({ url: `/pages/publish/index?id=${t.id}` })}
-                        disabled={t.status === 'approved'}
-                    >
-                        编辑
-                    </Button>
-                    <Button
-                        size="mini"
-                        type="warn"
-                        onClick={() => handleDelete(t.id)}
-                    >
-                        删除
-                    </Button>
+                    <Image className="cover" src={t.coverImage || 'https://via.placeholder.com/120'} mode="aspectFill" />
+
+                    <View className="content">
+                        <Text className="title">{t.title}</Text>
+                        <Text className="status-text">{renderStatus(t.status, t.rejectReason)}</Text>
+
+                        <View className="button-group">
+                            <Button
+                                size="mini"
+                                onClick={() => {
+                                    if (t.status === 'approved') {
+                                        Taro.showToast({ title: '已通过游记无法编辑', icon: 'none' });
+                                        return;
+                                    }
+                                    Taro.switchTab({ url: `/pages/publish/index?id=${t.id}` });
+                                }}
+                            >
+                                编辑
+                            </Button>
+                            <Button
+                                size="mini"
+                                type="warn"
+                                onClick={() => handleDelete(t.id)}
+                            >
+                                删除
+                            </Button>
+                        </View>
+                    </View>
                 </View>
             ))}
         </View>

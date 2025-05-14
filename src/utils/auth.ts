@@ -8,3 +8,8 @@ export const checkLogin = () => {
     }
     return token;
 };
+
+export function getCurrentUser() {
+    const user = Taro.getStorageSync('user');
+    return user || null;
+}

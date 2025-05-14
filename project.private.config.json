@@ -23,11 +23,25 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/login/index",
-          "pathName": "pages/login/index",
+          "name": "pages/home/noteDetail/index",
+          "pathName": "pages/home/noteDetail/index",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/my-travel/index",
+          "pathName": "pages/my-travel/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/login/index",
+          "pathName": "pages/login/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/register/index",
