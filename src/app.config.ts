@@ -15,13 +15,13 @@ export default defineAppConfig({
         "iconPath": "static/tabs/home_default.png",
         "selectedIconPath": "static/tabs/home_selected.png"
       },
-      {
-        // 'pagePath':'pages/createNote/index',
-        'pagePath':'pages/publish/index',
-        'text':'',
-        'iconPath':'static/tabs/plus.png',
-        'selectedIconPath':'static/tabs/plus.png'
-      },
+      // {
+      //   // 'pagePath':'pages/createNote/index',
+      //   'pagePath': 'pages/publish/index',
+      //   'text': '',
+      //   'iconPath': 'static/tabs/plus.png',
+      //   'selectedIconPath': 'static/tabs/plus.png'
+      // },
       {
         "pagePath": "pages/my-travel/index",
         "text": "我的",

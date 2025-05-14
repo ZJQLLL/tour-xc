@@ -14,18 +14,40 @@ const Publish = () => {
   const [video, setVideo] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // useEffect(() => {
+  //   checkLogin();
+  //   if (id) fetchTravel(id);
+  // }, [id]);
+
   useEffect(() => {
     checkLogin();
-    if (id) fetchTravel(id);
-  }, [id]);
+
+    const { id } = router.params;
+    if (id) {
+      fetchTravel(id);
+    } else {
+      // 新建游记，清空状态
+      setTitle('');
+      setContent('');
+      setImages([]);
+      setVideo('');
+    }
+  }, [router.params.id]);
+
+
 
   const fetchTravel = async (id) => {
-    const res = await getTravelById(id);
-    const t = res.data;
+    // const res = await getTravelById(id);
+    const res = await Taro.request({
+      url: `https://p9zej3r6lf.hzh.sealos.run/get_tour_detail?id=${id}`,
+      method: 'GET',
+    })
+    const t = res.data.data;
+    console.log('获取游记:', t);
     setTitle(t.title);
     setContent(t.content);
     setImages(t.images || []);
-    setVideo(t.video || '');
+    setVideo(t.video || null);
   };
 
   const handleChooseImages = async () => {
@@ -33,18 +55,18 @@ const Publish = () => {
     setImages([...images, ...res.tempFilePaths]);
   };
 
-    //   const handleChooseImages = async () => {
-    //     const res = await Taro.chooseImage({ count: 9 - images.length });
-    //     console.log(res.tempFilePaths);
-    //     const uploaded = await Promise.all(
-    //         res.tempFilePaths.map(async (path) => {
-    //             const uploadRes = await uploadFile(path, 'image');
-    //             console.log(uploadRes);
-    //             return JSON.parse(uploadRes.data).url;
-    //         })
-    //     )
-    //     setImages([...images, ...uploaded]);
-    // };
+  //   const handleChooseImages = async () => {
+  //     const res = await Taro.chooseImage({ count: 9 - images.length });
+  //     console.log(res.tempFilePaths);
+  //     const uploaded = await Promise.all(
+  //         res.tempFilePaths.map(async (path) => {
+  //             const uploadRes = await uploadFile(path, 'image');
+  //             console.log(uploadRes);
+  //             return JSON.parse(uploadRes.data).url;
+  //         })
+  //     )
+  //     setImages([...images, ...uploaded]);
+  // };
   const handleChooseVideo = async () => {
     const res = await Taro.chooseVideo({});
     setVideo(res.tempFilePath);
@@ -78,7 +100,9 @@ const Publish = () => {
     if (res.statusCode === 200) {
       Taro.showToast({ title: id ? '更新成功' : '发布成功' });
       await getTravelById(user.id);
-      Taro.switchTab({ url: '/pages/my-travel/index' });
+      // Taro.switchTab({ url: '/pages/my-travel/index' });
+      Taro.redirectTo({ url: '/pages/my-travel/index' }); // 强制刷新
+
     } else {
       Taro.showToast({ title: '提交失败', icon: 'none' });
     }

@@ -63,14 +63,9 @@ const MyTravel = () => {
 
     return (
         <View className="my-travel-page">
-            {/* <Button onClick={() => Taro.switchTab({ url: '/pages/publish/index' })}>
-                ➕ 发布新游记
-            </Button> */}
-
             {travels.map((t) => (
                 <View key={t.id} className="travel-card">
                     <Image className="cover" src={t.coverImage || 'https://via.placeholder.com/120'} mode="aspectFill" />
-
                     <View className="content">
                         <Text className="title">{t.title}</Text>
                         <Text className="status-text">{renderStatus(t.status, t.rejectReason)}</Text>
@@ -83,23 +78,28 @@ const MyTravel = () => {
                                         Taro.showToast({ title: '已通过游记无法编辑', icon: 'none' });
                                         return;
                                     }
-                                    Taro.switchTab({ url: `/pages/publish/index?id=${t.id}` });
+                                    Taro.navigateTo({
+                                        url: `/pages/publish/index?id=${t.id}`,
+                                    });
                                 }}
                             >
                                 编辑
                             </Button>
-                            <Button
-                                size="mini"
-                                type="warn"
-                                onClick={() => handleDelete(t.id)}
-                            >
-                                删除
-                            </Button>
+                            <Button size="mini" type="warn" onClick={() => handleDelete(t.id)}>删除</Button>
                         </View>
                     </View>
                 </View>
             ))}
+
+            {/* 底部发布按钮 */}
+            <View
+                className="publish-btn"
+                onClick={() => Taro.navigateTo({ url: '/pages/publish/index' })}
+            >
+                ➕ 发布新游记
+            </View>
         </View>
+
     );
 };
 
