@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Input, Textarea, Button, Image, Video } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
-import { getTravelById, uploadFile, saveTravel } from '@/api/travel';
+import { getTravelById, saveTravel, updateTravel } from '@/api/travel';
 import { checkLogin } from '@/utils/auth';
 import './index.less'; // 建议写一些样式放在这里
 
@@ -21,8 +21,6 @@ const Publish = () => {
 
   useEffect(() => {
     checkLogin();
-
-    const { id } = router.params;
     if (id) {
       fetchTravel(id);
     } else {
@@ -32,7 +30,7 @@ const Publish = () => {
       setImages([]);
       setVideo('');
     }
-  }, [router.params.id]);
+  }, [id, router.params]);
 
 
 
@@ -94,18 +92,33 @@ const Publish = () => {
       },
     };
 
-    const res = await saveTravel(payload);
+    id?await updateTravel(payload):await saveTravel(payload)
     setLoading(false);
 
-    if (res.statusCode === 200) {
-      Taro.showToast({ title: id ? '更新成功' : '发布成功' });
-      await getTravelById(user.id);
+     Taro.showToast({ title: id ? '更新成功' : '发布成功' });
+      if (!id) {
+        setTitle('')
+        setContent('')
+        setImages([])
+        setVideo('')
+      }
       // Taro.switchTab({ url: '/pages/my-travel/index' });
-      Taro.redirectTo({ url: '/pages/my-travel/index' }); // 强制刷新
+      setTimeout(() => {
+  Taro.switchTab({ url: '/pages/my-travel/index' });
+}, 1500); // 延迟 1.5 秒，保证 toast 显示
 
-    } else {
-      Taro.showToast({ title: '提交失败', icon: 'none' });
-    }
+    // if (res.statusCode === 200) {
+    //   Taro.showToast({ title: id ? '更新成功' : '发布成功' });
+    //   if (!id) {
+    //     setTitle('')
+    //     setContent('')
+    //     setImages([])
+    //     setVideo('')
+    //   }
+    //   Taro.switchTab({ url: '/pages/my-travel/index' });
+    // } else {
+    //   Taro.showToast({ title: '提交失败', icon: 'none' });
+    // }
   };
 
   return (

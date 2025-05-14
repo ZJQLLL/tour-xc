@@ -12,6 +12,8 @@ export default function NoteDetail() {
   const [playVideo, setPlayVideo] = useState(false)
   const [liked, setLiked] = useState(false)       // 是否点赞
   const [likeCount, setLikeCount] = useState<number>(0)  // 当前点赞数
+  const [commentContent, setCommentContent] = useState('');
+
 
 
   useLoad(() => {
@@ -39,23 +41,100 @@ export default function NoteDetail() {
     setLikeCount(res.data?.data?.like_count || 0)
   }
 
-  const handleLike = () => {
-  if (liked) {
-    setLikeCount(prev => prev - 1)
-  } else {
-    setLikeCount(prev => prev + 1)
-  }
-  setLiked(!liked)
+//   const handleLike = () => {
+//   if (liked) {
+//     setLikeCount(prev => prev - 1)
+//   } else {
+//     setLikeCount(prev => prev + 1)
+//   }
+//   setLiked(!liked)
 
-  // 👉 可选：异步请求接口同步点赞状态
-  // Taro.request({
-  //   url: 'https://你的接口地址/update_like',
-  //   method: 'POST',
-  //   data: {
-  //     noteId: note._id,
-  //     liked: !liked
-  //   }
-  // })
+//   // 👉 可选：异步请求接口同步点赞状态
+//   // Taro.request({
+//   //   url: 'https://你的接口地址/update_like',
+//   //   method: 'POST',
+//   //   data: {
+//   //     noteId: note._id,
+//   //     liked: !liked
+//   //   }
+//   // })
+// }
+
+const handleLike = async () => {
+  const user = Taro.getStorageSync('user')
+
+  if (!user || !user.id) {
+    Taro.showToast({ title: '请先登录', icon: 'none' })
+    setTimeout(() => {
+      Taro.navigateTo({ url: '/pages/login/index' }) // 替换为你的登录页路径
+    }, 800)
+    return
+  }
+
+  const newLiked = !liked
+  const newLikeCount = likeCount + (newLiked ? 1 : -1)
+
+  // 本地更新
+  setLiked(newLiked)
+  setLikeCount(newLikeCount)
+
+  try {
+    const res = await Taro.request({
+      url: 'https://p9zej3r6lf.hzh.sealos.run/great',
+      method: 'POST',
+      data: {
+        id: note?._id,
+        userId: user.id, // 后端可以用这个避免重复点赞
+        action: newLiked ? 'like' : 'unlike'
+      }
+    })
+
+    if (res.data.code !== 0) {
+      throw new Error('后端错误')
+    }
+  } catch (err) {
+    Taro.showToast({ title: '点赞失败', icon: 'none' })
+    // 回滚
+    setLiked(!newLiked)
+    setLikeCount(likeCount)
+  }
+}
+
+
+  const handleSubmitComment = async () => {
+  if (!commentContent.trim()) {
+    Taro.showToast({ title: '评论不能为空', icon: 'none' });
+    return;
+  }
+
+  const user = Taro.getStorageSync('user');
+  if (!user) {
+    Taro.showToast({ title: '请先登录', icon: 'none' });
+    return;
+  }
+
+  try {
+    const res = await Taro.request({
+      url: 'https://p9zej3r6lf.hzh.sealos.run/comment',
+      method: 'POST',
+      data: {
+        id: note?._id,
+        username: user.username,
+        avatar: user.avatar||'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        content: commentContent
+      }
+    });
+
+    if (res.data.code === 0) {
+      Taro.showToast({ title: '评论成功' });
+      setCommentContent(''); // 清空输入
+      fetchNote(note?._id as string);   // 重新加载游记详情，更新评论列表
+    } else {
+      Taro.showToast({ title: res.data.message || '评论失败', icon: 'none' });
+    }
+  } catch (error) {
+    Taro.showToast({ title: '网络错误', icon: 'none' });
+  }
 }
 
 
@@ -181,7 +260,15 @@ export default function NoteDetail() {
     <Text className='text'>{note.commentCount || 0}</Text>
   </View>
 
-  <Input className='comment-input' placeholder='写个评论在心上~' />
+  <Input
+    className='comment-input'
+    placeholder='写个评论在心上~'
+    value={commentContent}
+    onInput={(e) => setCommentContent(e.detail.value)}
+    confirmType='done' // 软键盘显示“完成”或“发送”
+    onConfirm={handleSubmitComment}
+  />
+
 </View>
 
 
