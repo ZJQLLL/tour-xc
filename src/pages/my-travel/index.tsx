@@ -83,7 +83,7 @@ const MyTravel = () => {
                                         Taro.showToast({ title: '已通过游记无法编辑', icon: 'none' });
                                         return;
                                     }
-                                    Taro.navigateTo({ url: `/pages/publish/index?id=${t.id}` });
+                                    Taro.switchTab({ url: `/pages/publish/index?id=${t.id}` });
                                 }}
                             >
                                 编辑
