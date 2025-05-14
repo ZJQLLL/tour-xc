@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Button, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { getTravelById, deleteTravel } from '@/api/travel';
 import { checkLogin, getCurrentUser } from '@/utils/auth'; // 需要有获取当前用户信息的方法
 import './index.module.css';
@@ -21,6 +21,10 @@ const MyTravel = () => {
         fetchTravels();
     }, []);
 
+    useDidShow(() => {
+    // 每次从别的页面切换回来时都会执行
+    fetchTravels();
+  })
     const fetchTravels = async () => {
         const user = getCurrentUser(); // 假设返回 { id: 'xxx', ... }
         if (!user?.id) {

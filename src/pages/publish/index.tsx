@@ -77,7 +77,6 @@ const Publish = () => {
 
     if (res.statusCode === 200) {
       Taro.showToast({ title: id ? '更新成功' : '发布成功' });
-      await getTravelById(user.id);
       Taro.switchTab({ url: '/pages/my-travel/index' });
     } else {
       Taro.showToast({ title: '提交失败', icon: 'none' });
