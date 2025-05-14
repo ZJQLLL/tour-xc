@@ -152,6 +152,18 @@ const Publish = () => {
     setImages([...images, ...res.tempFilePaths]);
   };
 
+    //   const handleChooseImages = async () => {
+    //     const res = await Taro.chooseImage({ count: 9 - images.length });
+    //     console.log(res.tempFilePaths);
+    //     const uploaded = await Promise.all(
+    //         res.tempFilePaths.map(async (path) => {
+    //             const uploadRes = await uploadFile(path, 'image');
+    //             console.log(uploadRes);
+    //             return JSON.parse(uploadRes.data).url;
+    //         })
+    //     )
+    //     setImages([...images, ...uploaded]);
+    // };
   const handleChooseVideo = async () => {
     const res = await Taro.chooseVideo({});
     setVideo(res.tempFilePath);
