@@ -18,6 +18,10 @@ const MyTravel = () => {
 
     useEffect(() => {
         checkLogin();
+        const user = Taro.getStorageSync('user')
+        if (!user) {
+          Taro.redirectTo({ url: '/pages/login/index' });
+        }
         fetchTravels();
     }, []);
 
