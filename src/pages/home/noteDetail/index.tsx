@@ -1,10 +1,11 @@
 import { View, Text, Image, Swiper, SwiperItem, Input, Video } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
-import Taro, { useLoad } from '@tarojs/taro'
+import Taro, { useLoad,useShareAppMessage  } from '@tarojs/taro'
 import {  useEffect, useState } from 'react'
 import { toBeijingTime } from '@/utils/common'
 import './index.less'
 import { noteDetailItem } from '../../../../types/noteDetail'
+
 
 export default function NoteDetail() {
   const [note, setNote] = useState<noteDetailItem>()
@@ -14,7 +15,13 @@ export default function NoteDetail() {
   const [likeCount, setLikeCount] = useState<number>(0)  // 当前点赞数
   const [commentContent, setCommentContent] = useState('');
 
-
+  useShareAppMessage(() => {
+  return {
+    title: note?.title || '精彩游记等你来看～',
+    path: `/pages/home/noteDetail/index?id=${note?._id}`,
+    imageUrl: (note?.images?.[0]) || 'https://picsum.photos/seed/105/800/600'
+  }
+})
 
   useLoad(() => {
     Taro.setNavigationBarTitle({
@@ -25,6 +32,7 @@ export default function NoteDetail() {
       fetchNote(id)
     }
   })
+
 
   useEffect(() => {
   if (note?.likes !== undefined) {
