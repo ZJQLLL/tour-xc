@@ -3,7 +3,9 @@ import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { login } from '@/api/user';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // 使用 react-icons 的小眼睛图标
-import './index.module.scss';
+import './index.less'
+
+
 // import { InputType } from 'zlib';
 
 const Login = () => {
@@ -32,33 +34,34 @@ const Login = () => {
     };
 
     return (
-        <View className="loginPage">
-            <View className="container">
-                <Text className="title">欢迎登录</Text>
+        <View className='loginPage'>
+            <View className='container'>
+                <Text className='title'>欢迎登录游记发布平台~</Text>
 
-                <View className="inputGroup">
-                    <Text className="label">用户名</Text>
+                <View className='inputGroup'>
+                    <Text className='label'>用户名</Text>
                     <Input
-                        className="input"
-                        value={username}
-                        placeholder="请输入用户名"
-                        onInput={(e) => setUsername(e.detail.value)}
+                      className='input'
+                      value={username}
+                      placeholder='请输入用户名'
+                      onInput={(e) => setUsername(e.detail.value)}
                     />
                 </View>
 
-                <View className="inputGroup">
-                    <Text className="label">密码</Text>
-                    <View className="passwordWrapper">
+                <View className='inputGroup'>
+                    <Text className='label'>密码</Text>
+                    <View className='passwordWrapper'>
                         <Input
-                            className="input"
-                            placeholder="请输入密码"
-                            type={showPassword ? 'text' as any : 'password'} // 显式声明类型
-                            value={password}
-                            onInput={(e) => setPassword(e.detail.value)}
+                          className='input'
+                          placeholder='请输入密码'
+                          password
+                          //type={showPassword ? 'text' as any : 'password'} // 显式声明类型
+                          value={password}
+                          onInput={(e) => setPassword(e.detail.value)}
                         />
                         <View
-                            className="eyeIcon"
-                            onClick={() => setShowPassword(!showPassword)} // 切换密码可见性
+                          className='eyeIcon'
+                          onClick={() => setShowPassword(!showPassword)} // 切换密码可见性
                         >
                             {showPassword ? (
                                 <AiOutlineEye size={20} />
@@ -69,13 +72,13 @@ const Login = () => {
                     </View>
                 </View>
 
-                <Button className="loginBtn" onClick={handleLogin}>
-                    登录
+                <Button className='loginBtn' onClick={handleLogin} >
+                    登  录
                 </Button>
 
                 <Button
-                    className="registerBtn"
-                    onClick={() => Taro.navigateTo({ url: '/pages/register/index' })}
+                  className='registerBtn'
+                  onClick={() => Taro.navigateTo({ url: '/pages/register/index' })}
                 >
                     没有账号？去注册
                 </Button>

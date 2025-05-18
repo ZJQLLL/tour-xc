@@ -1,0 +1,118 @@
+.loginPage {
+  width: 100vw;
+  height: 100vh;
+  background: url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1470&q=80') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 半透明白色背景容器，营造清晰层次 */
+  .container {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 24rpx;
+    padding: 80rpx 50rpx;
+    width: 100%;
+    max-width: 640rpx;
+    box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.12);
+
+    /* 标题 */
+    .title {
+      font-size: 48rpx;
+      font-weight: 700;
+      color: #0a3d62;
+      text-align: center;
+      margin-bottom: 60rpx;
+      font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+    }
+
+    /* 输入组 */
+    .inputGroup {
+      margin-bottom: 36rpx;
+
+      .label {
+        font-size: 28rpx;
+        color: #374151;
+        margin-top: 20px;
+        margin-bottom: 14rpx;
+        display: block;
+        font-weight: 600;
+      }
+
+      .input {
+        width: 90%;
+        padding: 22rpx 24rpx;
+        font-size: 32rpx;
+        border: 1.5rpx solid #cbd5e1;
+        border-radius: 16rpx;
+        background-color: #f9fafb;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+          border-color: #3b82f6;
+          outline: none;
+          background-color: #fff;
+        }
+      }
+    }
+
+    /* 密码框和小眼睛 */
+    // .passwordWrapper {
+    //   position: relative;
+
+    //   .input {
+    //     padding-right: 64rpx;
+    //   }
+
+    //   .eyeIcon {
+    //     position: absolute;
+    //     right: 24rpx;
+    //     top: 50%;
+    //     transform: translateY(-50%);
+    //     color: #6b7280;
+    //     cursor: pointer;
+    //     transition: color 0.3s ease;
+
+    //     &:hover {
+    //       color: #2563eb;
+    //     }
+    //   }
+    // }
+
+    /* 登录按钮 */
+    .loginBtn {
+      width: 70%;
+      height: 80rpx;
+      background-color: #3b82f6;
+      color: #fff;
+      font-size: 30rpx;
+      line-height: 30px;
+      font-weight: 600;
+      text-align: center;
+      border-radius: 20rpx;
+      padding: 22rpx 0;
+      margin-top: 50rpx;
+      box-shadow: 0 8rpx 24rpx rgba(59, 130, 246, 0.3);
+      transition: background-color 0.3s ease;
+
+      &:active {
+        background-color: #2563eb;
+      }
+    }
+
+    /* 注册按钮 */
+    .registerBtn {
+      margin-top: 24rpx;
+      font-size: 28rpx;
+      color: #3b82f6;
+      text-align: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
