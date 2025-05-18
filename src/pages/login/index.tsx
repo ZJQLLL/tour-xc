@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { AtIcon } from 'taro-ui';
 import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { login } from '@/api/user';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // 使用 react-icons 的小眼睛图标
+//import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // 使用 react-icons 的小眼睛图标
 import './index.less'
+
 
 
 // import { InputType } from 'zlib';
@@ -54,12 +56,12 @@ const Login = () => {
                         <Input
                           className='input'
                           placeholder='请输入密码'
-                          password
+                          password={showPassword?true:false} // 使用 password 属性控制密码可见性
                           //type={showPassword ? 'text' as any : 'password'} // 显式声明类型
                           value={password}
                           onInput={(e) => setPassword(e.detail.value)}
                         />
-                        <View
+                        {/* <View
                           className='eyeIcon'
                           onClick={() => setShowPassword(!showPassword)} // 切换密码可见性
                         >
@@ -68,7 +70,19 @@ const Login = () => {
                             ) : (
                                 <AiOutlineEyeInvisible size={20} />
                             )}
-                        </View>
+                        </View> */}
+                        <AtIcon
+                          className='eyeIcon'
+                          value='eye'
+                          size='30'
+                          color={showPassword ? '#333' : '#ccc'}
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                              opacity: showPassword ? 1 : 0.5,
+                              transform: showPassword ? 'none' : 'rotate(45deg)', // 模拟“关闭眼睛”
+                              transition: 'all 0.2s ease',
+                              }}
+                        />
                     </View>
                 </View>
 

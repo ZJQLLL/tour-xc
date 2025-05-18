@@ -54,6 +54,22 @@
   outline: none;
   background-color: #fff;
 }
+.loginPage .container .passwordWrapper {
+  position: relative;
+}
+.loginPage .container .passwordWrapper .eyeIcon {
+  position: absolute;
+  width: 20%;
+  right: 14rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 990;
+}
+.loginPage .container .passwordWrapper .eyeIcon:hover {
+  color: #2563eb;
+}
 .loginPage .container .loginBtn {
   width: 70%;
   height: 80rpx;

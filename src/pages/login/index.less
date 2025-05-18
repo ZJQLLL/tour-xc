@@ -57,27 +57,27 @@
     }
 
     /* 密码框和小眼睛 */
-    // .passwordWrapper {
-    //   position: relative;
+    .passwordWrapper {
+      position: relative;
 
-    //   .input {
-    //     padding-right: 64rpx;
-    //   }
 
-    //   .eyeIcon {
-    //     position: absolute;
-    //     right: 24rpx;
-    //     top: 50%;
-    //     transform: translateY(-50%);
-    //     color: #6b7280;
-    //     cursor: pointer;
-    //     transition: color 0.3s ease;
+      .eyeIcon {
+        position: absolute;
+        width: 20%;
+        right: 14rpx;
+        top: 50%;
+        transform: translateY(-50%);
 
-    //     &:hover {
-    //       color: #2563eb;
-    //     }
-    //   }
-    // }
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        z-index: 990;
+
+        &:hover {
+          color: #2563eb;
+        }
+      }
+    }
 
     /* 登录按钮 */
     .loginBtn {
