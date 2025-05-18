@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { uploadFileToQiniu } from '@/api/upload';
 import { View, Text, Input, Textarea, Button, Image, Video } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
-import { getTravelById, saveTravel, updateTravel } from '@/api/travel';
+import {  saveTravel, updateTravel } from '@/api/travel';
 import { checkLogin } from '@/utils/auth';
 import './index.less'; // 建议写一些样式放在这里
+
 
 const Publish = () => {
   const router = useRouter();
@@ -48,10 +50,30 @@ const Publish = () => {
     setVideo(t.video || null);
   };
 
+  // const handleChooseImages = async () => {
+  //   const res = await Taro.chooseImage({ count: 9 - images.length });
+  //   setImages([...images, ...res.tempFilePaths]);
+  // };
+
   const handleChooseImages = async () => {
-    const res = await Taro.chooseImage({ count: 9 - images.length });
-    setImages([...images, ...res.tempFilePaths]);
-  };
+  const res = await Taro.chooseImage({ count: 9 - images.length });
+
+  Taro.showLoading({ title: '上传中...' });
+
+  try {
+    // 并发上传所有图片
+    const uploaded = await Promise.all(
+      res.tempFilePaths.map(filePath => uploadFileToQiniu(filePath))
+    );
+
+    // 保存上传后返回的七牛云 URL
+    setImages([...images, ...uploaded]);
+  } catch (err) {
+    Taro.showToast({ title: String(err), icon: 'none' });
+  } finally {
+    Taro.hideLoading();
+  }
+};
 
   //   const handleChooseImages = async () => {
   //     const res = await Taro.chooseImage({ count: 9 - images.length });
@@ -122,35 +144,35 @@ const Publish = () => {
   };
 
   return (
-    <View className="publish-page">
-      <Text className="section-title">标题</Text>
-      <Text className="star">*</Text>
-      <Input className="input" value={title} placeholder="请输入游记标题" onInput={(e) => setTitle(e.detail.value)} />
+    <View className='publish-page'>
+      <Text className='section-title'>标题</Text>
+      <Text className='star'>*</Text>
+      <Input className='input' value={title} placeholder='请输入游记标题' onInput={(e) => setTitle(e.detail.value)} />
 
-      <Text className="section-title">内容</Text>
-      <Text className="star">*</Text>
+      <Text className='section-title'>内容</Text>
+      <Text className='star'>*</Text>
 
       <Textarea
-        className="textarea"
+        className='textarea'
         value={content}
-        placeholder="请输入游记正文"
+        placeholder='请输入游记正文'
         onInput={(e) => setContent(e.detail.value)}
       />
 
-      <Text className="section-title">图片（最多九张）</Text>
-      <Text className="star">*</Text>
-      <Button className="upload-btn" onClick={handleChooseImages}>选择图片</Button>
-      <View className="image-preview">
+      <Text className='section-title'>图片（最多九张）</Text>
+      <Text className='star'>*</Text>
+      <Button className='upload-btn' onClick={handleChooseImages}>选择图片</Button>
+      <View className='image-preview'>
         {images.map((img) => (
-          <Image key={img} src={img} mode="aspectFill" className="preview-img" />
+          <Image key={img} src={img} mode='aspectFill' className='preview-img' />
         ))}
       </View>
 
-      <Text className="section-title">视频（可选）</Text>
-      <Button className="upload-btn" onClick={handleChooseVideo}>选择视频</Button>
-      {video && <Video src={video} className="video-preview" />}
+      <Text className='section-title'>视频（可选）</Text>
+      <Button className='upload-btn' onClick={handleChooseVideo}>选择视频</Button>
+      {video && <Video src={video} className='video-preview' />}
 
-      <Button className="submit-btn" loading={loading} onClick={handleSubmit}>
+      <Button className='submit-btn' loading={loading} onClick={handleSubmit}>
         {id ? '更新游记' : '发布游记'}
       </Button>
     </View>

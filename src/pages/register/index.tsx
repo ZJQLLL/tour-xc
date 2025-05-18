@@ -5,6 +5,7 @@ import { register } from '@/api/user';
 // import styles from './index.module.scss';
 import './index.module.scss';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { uploadFileToQiniu } from '@/api/upload';
 
 
 const Register = () => {
@@ -17,7 +18,16 @@ const Register = () => {
     const handleChooseAvatar = async () => {
         try {
             const res = await Taro.chooseImage({ count: 1 });
-            setTempAvatarPath(res.tempFilePaths[0]);
+            //setTempAvatarPath(res.tempFilePaths[0]);
+            const localPath = res.tempFilePaths[0];
+
+    Taro.showLoading({ title: '上传中...' });
+
+    const uploadedUrl = await uploadFileToQiniu(localPath);//向后端提交的真实地址
+    console.log('Uploaded URL:', uploadedUrl);
+    setTempAvatarPath(uploadedUrl);
+
+    Taro.hideLoading();
         } catch (error) {
             Taro.showToast({ title: '选择图片失败', icon: 'none' });
             console.error('Choose image error:', error);
