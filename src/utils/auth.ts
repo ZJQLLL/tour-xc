@@ -13,3 +13,9 @@ export function getCurrentUser() {
     const user = Taro.getStorageSync('user');
     return user || null;
 }
+
+export function logout() {
+    // 清除用户信息
+    Taro.removeStorageSync('user');
+    // 可以添加其他清理逻辑，如清除token等
+}

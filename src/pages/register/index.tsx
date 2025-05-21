@@ -47,7 +47,7 @@ const Register = () => {
             const res = await register(registerData);
 
             if (res.statusCode === 200 && res.data.message === '注册成功') {
-                Taro.showToast({ title: '注册成功，请登录' });
+                Taro.showToast({ title: '注册成功，请登录' , icon: 'none'});
                 setTimeout(() => {
                     Taro.navigateTo({ url: '/pages/login/index' });
                 }, 1500);

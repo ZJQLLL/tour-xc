@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, Button, Image } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
 import { getTravelById, deleteTravel } from '@/api/travel';
-import { checkLogin, getCurrentUser } from '@/utils/auth'; // 需要有获取当前用户信息的方法
+import { checkLogin, getCurrentUser, logout } from '@/utils/auth'; // 新增 logout 方法
 import './index.module.css';
 
 interface Travel {
@@ -13,22 +13,39 @@ interface Travel {
     coverImage?: string;
 }
 
+interface User {
+    avatar?: string;
+    id: string;
+    role?: "user";
+    username?: string;
+}
+
 const MyTravel = () => {
     const [travels, setTravels] = useState<Travel[]>([]);
+    const [userInfo, setUserInfo] = useState<User | null>(null);
 
     useEffect(() => {
         checkLogin();
         const user = Taro.getStorageSync('user')
         if (!user) {
           Taro.redirectTo({ url: '/pages/login/index' });
+        } else {
+            console.log('当前用户:', user);
+            setUserInfo(user);
         }
         fetchTravels();
     }, []);
 
     useDidShow(() => {
-    // 每次从别的页面切换回来时都会执行
-    fetchTravels();
-  })
+        // 每次从别的页面切换回来时都会执行
+        fetchTravels();
+        // 更新用户信息
+        const user = Taro.getStorageSync('user');
+        if (user) {
+            setUserInfo(user);
+        }
+    });
+
     const fetchTravels = async () => {
         const user = getCurrentUser(); // 假设返回 { id: 'xxx', ... }
         if (!user?.id) {
@@ -69,8 +86,36 @@ const MyTravel = () => {
         return '';
     };
 
+    // 新增退出登录方法
+    const handleLogout = () => {
+        Taro.showModal({
+            title: '确认退出',
+            content: '你确定要退出当前账号吗？',
+            success: (res) => {
+                if (res.confirm) {
+                    logout(); // 调用退出登录方法
+                    Taro.reLaunch({ url: '/pages/login/index' }); // 重新跳转到登录页
+                }
+            }
+        });
+    };
+
     return (
         <View className="my-travel-page">
+            {/* 用户信息区域 */}
+            <View className="user-info-container">
+                <Image 
+                    className="user-avatar" 
+                    src={userInfo?.avatar || 'https://picsum.photos/200/200'} 
+                    mode="aspectFill" 
+                />
+                {/* <View className="user-details">
+                    <Text className="user-name">{userInfo?.username || '游客'}</Text>
+                </View> */}
+                <Text className="user-name">{userInfo?.username || '游客'}</Text>
+                <Button className="logout-btn" size="mini" onClick={handleLogout}>退出</Button>
+            </View>
+
             {travels.map((t) => (
                 <View key={t.id} className="travel-card">
                     <Image className="cover" src={t.coverImage || 'https://via.placeholder.com/120'} mode="aspectFill" />
@@ -107,7 +152,6 @@ const MyTravel = () => {
                 ➕ 发布新游记
             </View>
         </View>
-
     );
 };
 
